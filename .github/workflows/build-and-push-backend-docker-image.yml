@@ -33,18 +33,18 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build the Docker image
-        run: docker build . --file ./TechreoChallenge.Api/Dockerfile --tag ghcr.io/${{ github.repository }}/techreo-api:latest
-
+        run: docker build . --file ./TechreoChallenge.Api/Dockerfile --tag ghcr.io/${{ github.repository }}-api:latest
+      
       - name: Check Docker image
         run: |
           docker images
-          docker inspect ghcr.io/${{ github.repository }}/techreo-api:latest
+          docker inspect ghcr.io/${{ github.repository }}-api:latest
       
       # Setun an run Trivy scan 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.20.0
         with:
-          image-ref: 'ghcr.io/${{ github.repository }}/techreo-api:latest'
+          image-ref: 'ghcr.io/${{ github.repository }}-api:latest'
           format: 'sarif'
           output: 'trivy-results.sarif'
 
@@ -56,4 +56,4 @@ jobs:
       # Push Docker image if no vulnerabilities found
       - name: Push Docker image
         if: success()
-        run: docker push ghcr.io/${{ github.repository }}/techreo-api:latest
+        run: docker push ghcr.io/${{ github.repository }}-api:latest
