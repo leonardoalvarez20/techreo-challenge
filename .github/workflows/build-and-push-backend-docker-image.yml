@@ -36,22 +36,19 @@ jobs:
           context: .
           file: ./TechreoChallenge.Api/Dockerfile
           tags: ghcr.io/${{ github.repository_owner }}/techreo-challenge-api:latest
-
-      # Set up Trivy
-      - name: Set up Trivy
+      
+      # Setun an run Trivy scan 
+      - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.20.0
-
-      # Scan Docker image for vulnerabilities
-      - name: Scan Docker image
-        id: trivy
-        run: trivy image --format json --output trivy-report.json ghcr.io/${{ github.repository_owner }}/techreo-challenge-api:latest
-
-      # Upload Trivy scan results as artifact
-      - name: Upload Trivy scan results
-        uses: actions/upload-artifact@v3
         with:
-          name: trivy-report-api
-          path: trivy-report.json
+          image-ref: 'ghcr.io/${{ github.repository_owner }}/techreo-challenge-api:latest'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif
 
       # Push Docker image if no vulnerabilities found
       - name: Push Docker image
