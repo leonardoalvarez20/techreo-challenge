@@ -36,7 +36,7 @@ jobs:
       # Build Docker image for Angular app
       - name: Build the Docker image
         run: |
-          docker build . --file ./techreo-challenge-web/Dockerfile --tag ghcr.io/${{ github.repository_owner }}/techreo-challenge-web:latest
+          docker build ./techreo-challenge-web --file ./techreo-challenge-web/dockerfile --tag ghcr.io/${{ github.repository_owner }}/techreo-challenge-web:latest
 
       # Run Trivy vulnerability scanner
       - name: Run Trivy vulnerability scanner
