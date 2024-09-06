@@ -38,13 +38,13 @@ jobs:
       - name: Check Docker image
         run: |
           docker images
-          docker inspect ghcr.io/${{ github.repository }}-api:latest
+          docker inspect ghcr.io/${{ github.repository }}/techreo-api:latest
       
       # Setun an run Trivy scan 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.20.0
         with:
-          image-ref: 'ghcr.io/${{ github.repository }}-api:latest'
+          image-ref: 'ghcr.io/${{ github.repository }}/techreo-api:latest'
           format: 'sarif'
           output: 'trivy-results.sarif'
 
@@ -56,4 +56,4 @@ jobs:
       # Push Docker image if no vulnerabilities found
       - name: Push Docker image
         if: success()
-        run: docker push ghcr.io/${{ github.repository }}-api:latest
+        run: docker push ghcr.io/${{ github.repository }}/techreo-api:latest
