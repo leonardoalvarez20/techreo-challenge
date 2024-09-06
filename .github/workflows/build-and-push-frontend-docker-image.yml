@@ -11,7 +11,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      packages: write
+      actions: read
+      contents: read
+      security-events: write
     steps:
       # Checkout the repository
       - name: Checkout repository
@@ -30,27 +34,26 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Build Docker image for Angular app
-      - name: Build Docker image
-        uses: docker/build-push-action@v4
+     - name: Build the Docker image
+        run: |
+          docker build  . --file ./techreo-challenge-web/Dockerfile --tag ghcr.io/${{ github.repository_owner }}/techreo-challenge-web:latest
+
+      # Run Trivy vulnerability scanner
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.20.0
         with:
-          context: ./techreo-challenge-web
-          file: ./techreo-challenge-web/Dockerfile
-          tags: ghcr.io/${{ github.repository_owner }}/techreo-challenge-web:latest
+          image-ref: 'ghcr.io/${{ github.repository_owner }}/techreo-challenge-web:latest'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
 
-      # Set up Trivy
-      - name: Set up Trivy
-        uses: aquasecurity/trivy-action@v1
-
-      # Scan Docker image for vulnerabilities
-      - name: Scan Docker image
-        run: trivy image ghcr.io/${{ github.repository_owner }}/techreo-challenge-web:latest
+      # Upload SARIF file
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif
 
       # Push Docker image if no vulnerabilities found
       - name: Push Docker image
         if: success()
-        uses: docker/build-push-action@v4
-        with:
-          context: ./techreo-challenge-web
-          file: ./techreo-challenge-web/Dockerfile
-          push: true
-          tags: ghcr.io/${{ github.repository_owner }}/techreo-challenge-web:latest
+        run: docker push ghcr.io/${{ github.repository_owner }}/techreo-challenge-web:latest
+
