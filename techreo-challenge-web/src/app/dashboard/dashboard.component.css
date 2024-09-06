@@ -1,0 +1,29 @@
+.dashboard-container {
+  padding: 16px;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-header-cell,
+.mat-cell {
+  padding: 16px;
+}
+
+button {
+  margin: 8px;
+}
+
+mat-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  background-color: white;
+}
+
+.log-out {
+  font-size: 16px;
+  font-weight: bold;
+  color: #472b74;
+}

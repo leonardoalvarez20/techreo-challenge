@@ -1,0 +1,27 @@
+<!-- transaction-modal.component.html -->
+<h2 mat-dialog-title>Agregar Transacción</h2>
+<mat-dialog-content>
+  <form [formGroup]="transactionForm">
+    <mat-form-field>
+      <mat-label>Descripción</mat-label>
+      <input matInput formControlName="description">
+      <mat-error *ngIf="transactionForm.get('description')?.hasError('required')">
+        La descripción es obligatoria.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Monto</mat-label>
+      <input matInput formControlName="amount" type="number">
+      <mat-error *ngIf="transactionForm.get('amount')?.hasError('required')">
+        El monto es obligatorio.
+      </mat-error>
+      <mat-error *ngIf="transactionForm.get('amount')?.hasError('pattern')">
+        El monto debe ser un número válido.
+      </mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-button (click)="onSubmit()">Agregar</button>
+</mat-dialog-actions>

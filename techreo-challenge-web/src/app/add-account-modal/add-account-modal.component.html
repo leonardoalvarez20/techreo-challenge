@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Agregar nueva cuenta</h2>
+<mat-dialog-content>
+  <form [formGroup]="addAccountForm" class="form-container">
+    <mat-form-field class="form-field">
+      <mat-label>Nombre de la cuenta</mat-label>
+      <input matInput formControlName="Alias">
+    </mat-form-field>
+    <mat-form-field class="form-field">
+      <mat-label>Saldo inicial</mat-label>
+      <input matInput type="number" formControlName="InitialBalance">
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-button (click)="onSubmit()">Agregar</button>
+</mat-dialog-actions>

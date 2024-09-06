@@ -1,0 +1,103 @@
+<div class="dashboard-container">
+  <mat-toolbar>
+    <span class="log-out">Cerrar sesión</span>
+  </mat-toolbar>
+  <h2>Tus Cuentas</h2>
+
+  <div *ngIf="accounts.length === 0">
+    <p>No tienes cuentas.</p>
+  </div>
+
+  <button mat-raised-button color="primary" (click)="openAddAccountModal()">Agregar Cuenta</button>
+
+  <mat-tab-group (selectedTabChange)="onTabChange($event)">
+    <!-- Tab de Cuentas -->
+    <mat-tab label="Cuentas">
+      <div *ngIf="accounts.length > 0">
+        <table mat-table [dataSource]="dataSource" matSort>
+
+          <!-- Alias Column -->
+          <ng-container matColumnDef="alias">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Alias </th>
+            <td mat-cell *matCellDef="let account"> {{ account.Alias }} </td>
+          </ng-container>
+
+          <!-- Balance Column -->
+          <ng-container matColumnDef="balance">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Balance </th>
+            <td mat-cell *matCellDef="let account"> {{ account.Balance | currency }} </td>
+          </ng-container>
+
+          <!-- Account Number  Column -->
+          <ng-container matColumnDef="accountNumber">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Account number </th>
+            <td mat-cell *matCellDef="let account"> {{ account.AccountNumber }} </td>
+          </ng-container>
+
+          <!-- CLABE Column -->
+          <ng-container matColumnDef="clabe">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> CLABE </th>
+            <td mat-cell *matCellDef="let account"> {{ account.CLABE }} </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+            <td mat-cell *matCellDef="let account">
+              <button mat-button (click)="openTransactionModal(account.Id, 'deposit')">Depositar</button>
+              <button mat-button (click)="openTransactionModal(account.Id, 'withdraw')">Retirar</button>
+              <button mat-button (click)="loadTransactions(account.Id)">Ver Transacciones</button>
+            </td>
+          </ng-container>
+
+          <!-- Table Header -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <!-- Table Row -->
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+      </div>
+    </mat-tab>
+
+    <!-- Tab de Historial de Transacciones -->
+    <mat-tab label="Historial de Transacciones">
+      <div *ngIf="transactions.length > 0">
+        <table mat-table [dataSource]="transactions" class="mat-elevation-z8">
+
+          <!-- Fecha Column -->
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef> Fecha </th>
+            <td mat-cell *matCellDef="let transaction">{{ transaction.Date | date: 'dd/MM/yyyy' }}</td>
+          </ng-container>
+
+          <!-- Monto Column -->
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef> Monto </th>
+            <td mat-cell *matCellDef="let transaction">{{ transaction.Amount | currency }}</td>
+          </ng-container>
+
+          <!-- Descripción Column -->
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef> Descripción </th>
+            <td mat-cell *matCellDef="let transaction">{{ transaction.Description }}</td>
+          </ng-container>
+
+          <!-- Tipo de Transacción Column -->
+          <ng-container matColumnDef="transactionType">
+            <th mat-header-cell *matHeaderCellDef> Tipo de Transacción </th>
+            <td mat-cell *matCellDef="let transaction">{{ transaction.TransactionType }}</td>
+          </ng-container>
+
+          <!-- Table Header -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsTransactions"></tr>
+          <!-- Table Row -->
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsTransactions;"></tr>
+
+        </table>
+      </div>
+      <div *ngIf="transactions.length === 0">
+        <p>No hay transacciones para esta cuenta.</p>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

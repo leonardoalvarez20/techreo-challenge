@@ -1,0 +1,6 @@
+@TechreoChallenge_HostAddress = http://localhost:5014
+
+GET {{TechreoChallenge_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

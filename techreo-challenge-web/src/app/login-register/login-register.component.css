@@ -1,0 +1,59 @@
+.login-register-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  /* Espacio entre los cards */
+  padding: 16px;
+  /* Espacio alrededor de la cuadrícula */
+}
+
+mat-card {
+  width: 400px;
+  padding: 20px;
+}
+
+mat-card-title {
+  text-align: center;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  padding: 0 16px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+button {
+  width: 100%;
+}
+
+.switch-action-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.action-link {
+  color: #3f51b5;
+  font-weight: 500;
+}
+
+.action-link:hover {
+  text-decoration: underline;
+}
+
+mat-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  background-color: white;
+}
+
+.company-name {
+  font-size: 24px;
+  font-weight: bold;
+  color: #472b74;
+}
