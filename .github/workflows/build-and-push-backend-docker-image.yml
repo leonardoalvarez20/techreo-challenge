@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build the Docker image
-        run: docker build . --file ./TechreoChallenge.Api/Dockerfile --tag ghcr.io/${{ github.repository }}-api:latest
+        run: docker build . --file ./TechreoChallenge.Api/Dockerfile --tag ghcr.io/${{ github.repository }}/techreo-api:latest
 
       - name: Check Docker image
         run: |
