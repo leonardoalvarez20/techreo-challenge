@@ -8,7 +8,7 @@ USER app
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG configuration=Release
 WORKDIR /src
-COPY ["TechreoChallenge.Api.csproj", "TechreoChallenge.Api/"]
+COPY ["TechreoChallenge.Api/TechreoChallenge.Api.csproj", "TechreoChallenge.Api/"]
 RUN dotnet restore "TechreoChallenge.Api/TechreoChallenge.Api.csproj"
 COPY . .
 WORKDIR "/src/TechreoChallenge.Api"
