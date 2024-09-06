@@ -31,12 +31,7 @@ jobs:
 
       - name: Build the Docker image
         run: |
-          docker build -f ./TechreoChallenge.Api/Dockerfile -t ghcr.io/${{ github.repository_owner }}/techreo-challenge-api:latest ./TechreoChallenge.Api
-
-      - name: Check Docker image
-        run: |
-          docker images
-          docker inspect ghcr.io/${{ github.repository_owner }}/techreo-challenge-api:latest
+          docker build  . --file ./TechreoChallenge.Api/Dockerfile --tag ghcr.io/${{ github.repository_owner }}/techreo-challenge-api:latest
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.20.0
