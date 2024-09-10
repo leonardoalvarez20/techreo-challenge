@@ -3,12 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LoginRequest } from '../models/login-request.model'; // Asegúrate de que el modelo esté correctamente importado
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-  private apiUrl = 'http://localhost:5014';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 

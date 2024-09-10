@@ -4,12 +4,14 @@ import { Observable } from 'rxjs';
 
 import { AccountRequest } from '../models/account-request.model'
 import { TransactionRequest } from '../models/transaction-request.model'
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
-  private apiUrl = 'http://localhost:5014'; // Ajusta la URL según tu API
+  private apiUrl = environment.apiUrl; // Ajusta la URL según tu API
 
   constructor(private http: HttpClient) { }
 

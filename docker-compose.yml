@@ -1,25 +1,32 @@
-# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
-
 services:
   techreochallenge_web:
     build:
       context: techreo-challenge-web
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     container_name: techreo-challenge-web
     depends_on:
       - techreochallenge_api
     ports:
       - "4200:80"
+    networks:
+      - techreo-challenge-network
 
   techreochallenge_api:
-    image: techreochallenge_api
     build:
       context: .
       dockerfile: TechreoChallenge.Api/Dockerfile
+    container_name: techreo-challenge-api
     ports:
-      - 5014:5014
+      - "5014:5014"
     depends_on:
       - mongodb
+    networks:
+      - techreo-challenge-network
+    environment:
+      - JWT__KEY=F5BE22A679E35BA82F04D1427DBE56B8FC7301E529A1322110715467DA59E7CE
+      - JWT__ISSUER=yourIssuer
+      - JWT__AUDIENCE=yourAudience
+      - MONGO__CONNECTIONSTRING=mongodb://mongodb:27017/banking_db
 
   mongodb:
     image: mongo:latest
@@ -31,6 +38,14 @@ services:
       - MONGO_INITDB_DATABASE=banking_db
       - MONGO_INITDB_ROOT_USERNAME=banking_user
       - MONGO_INITDB_ROOT_PASSWORD=banking_password
+    networks:
+      - techreo-challenge-network
 
 volumes:
   mongodb_data:
+
+
+networks:
+  techreo-challenge-network:
+    name: techreo-challenge-network
+    driver: bridge

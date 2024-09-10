@@ -1,11 +1,11 @@
 using AutoMapper;
-using DnsClient.Protocol;
 using MongoDB.Bson;
 using System;
 using TechreoChallenge.Api.Data.Enums;
 using TechreoChallenge.Api.Data.Models;
 using TechreoChallenge.Api.Data.Repositories;
 using TechreoChallenge.Api.DTOs;
+using TechreoChallenge.Api.Exceptions;
 
 namespace TechreoChallenge.Api.Services;
 
@@ -43,8 +43,12 @@ public class SavingsAccountService : ISavingsAccountService
 
     public async Task<Transaction> CreateTransactionAsync(string accountId, TransactionDTORequest transactionDTORequest, TransactionType transactionType)
     {
-        var account = _savingsAccountRepository.GetSavingsAccountByIdAsync(accountId);
-        if (account == null) throw new ArgumentException($"The account {accountId} doesn't exist.");
+        var account = await _savingsAccountRepository.GetSavingsAccountByIdAsync(accountId);
+        if (account == null) throw new NotFoundException($"The account {accountId} doesn't exist.");
+        if (transactionType == TransactionType.Withdrawal && (account.Balance == 0 || (account.Balance - transactionDTORequest.Amount) < 0))
+        {
+            throw new BadRequestException($"The account {accountId} doesn't have enough funds.");
+        }
         return await _transactionRepository.AddTransactionAsync(new Transaction
         {
             Id = ObjectId.GenerateNewId().ToString(),

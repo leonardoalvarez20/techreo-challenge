@@ -4,6 +4,8 @@ using TechreoChallenge.Api.Data.Models;
 using TechreoChallenge.Api.DTOs;
 using TechreoChallenge.Api.Helpers;
 using AutoMapper;
+using TechreoChallenge.Api.Exceptions;
+using MongoDB.Driver;
 
 namespace TechreoChallenge.Services;
 
@@ -20,13 +22,26 @@ public class CustomerService : ICustomerService
 
     public async Task<CustomerDTOResponse> CreateCustomerAsync(CustomerDTORequest customerDTORequest)
     {
-        DateTime dateTimeNow = DateTime.UtcNow;
-        Customer customer = _mapper.Map<Customer>(customerDTORequest);
-        customer.IsActive = true;
-        customer.Password = PasswordHasher.HashPassword(customer.Password);
-        customer.CreatedAt = dateTimeNow;
-        customer.UpdatedAt = dateTimeNow;
-        return _mapper.Map<CustomerDTOResponse>(await _customerRepository.AddAsync(customer));
+        try
+        {
+            DateTime dateTimeNow = DateTime.UtcNow;
+            Customer customer = _mapper.Map<Customer>(customerDTORequest);
+            customer.IsActive = true;
+            customer.Password = PasswordHasher.HashPassword(customer.Password);
+            customer.CreatedAt = dateTimeNow;
+            customer.UpdatedAt = dateTimeNow;
+            return _mapper.Map<CustomerDTOResponse>(await _customerRepository.AddAsync(customer));
+        }
+        catch (MongoWriteException ex) when (ex.WriteError != null)
+        {
+            if (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
+            {
+                var indexName = ex.WriteError.Message;
+                throw new BadRequestException($"Duplicate key error: {indexName}");
+            }
+
+            throw new BadRequestException($"Error writing: {ex.WriteError.Message}");
+        }
     }
 
     public async Task<bool> DeleteCustomerAsync(string id)

@@ -43,7 +43,7 @@ Sigue estos pasos para clonar y ejecutar el proyecto en tu máquina local:
     dotnet run
     ```
 
-7. Abre tu navegador y navega a `http://localhost:4200` para ver el front-end Angular.
+7. Abre tu navegador y navega a `http://localhost:4200/login` para ver el front-end Angular.
 
 ## Pasos para ejecutar el proyecto en Docker
 
@@ -84,14 +84,85 @@ Sigue estos pasos para ejecutar el proyecto usando Docker:
     docker-compose down
     ```
 
-### Detalles adicionales
+# Instrucciones para Descargar y Ejecutar los contenedores desde GHCR
 
-- Si modificas el código y deseas reconstruir las imágenes de Docker, puedes usar:
+
+1. **Descargar la imagen del frontend**:
+
     ```bash
-    docker-compose up --build
+    docker pull ghcr.io/leonardoalvarez20/techreo-challenge-web:latest
     ```
 
-- Si solo quieres construir el proyecto de nuevo sin correr los contenedores:
+2. **Descargar la imagen del backend**:
+
     ```bash
-    docker-compose build
+    docker pull ghcr.io/leonardoalvarez20/techreo-challenge-api:latest
     ```
+
+3. **Descargar la imagen de MongoDB**:
+
+    ```bash
+    docker pull mongo:latest
+    ```
+
+## Pasos para Ejecutar los Contenedores
+
+1. **Crear una Docker network**:
+
+    ```bash
+    docker network create techreo-challenge-network
+    ```
+
+2. **Ejecutar MongoDB**:
+
+    Ejecuta el siguiente comando para agregar MongoDB a la red y permitir que el backend pueda conectarse a la base de datos:
+
+    ```bash
+    docker run -d \
+      --network techreo-challenge-network \
+      --name mongodb \
+      -p 27017:27017 \
+      -e MONGO_INITDB_DATABASE=banking_db \
+      -e MONGO_INITDB_ROOT_USERNAME=banking_user \
+      -e MONGO_INITDB_ROOT_PASSWORD=banking_password \
+      mongo:latest
+    ```
+
+3. **Ejecutar la API (Backend)**:
+
+    Ejecuta el contenedor para la API con el siguiente comando:
+
+    ```bash
+    docker run -d \
+      --network techreo-challenge-network \
+      --name techreo-challenge-api \
+      -p 5014:5014 \
+      -e JWT__KEY=F5BE22A679E35BA82F04D1427DBE56B8FC7301E529A1322110715467DA59E7CE \
+      -e JWT__ISSUER=yourIssuer \
+      -e JWT__AUDIENCE=yourAudience \
+      -e MONGO__CONNECTIONSTRING=mongodb://mongodb:27017/banking_db \
+      ghcr.io/leonardoalvarez20/techreo-challenge-api:latest
+    ```
+
+4. **Ejecutar la Aplicación Web (Frontend)**:
+
+    Ejecuta el contenedor para la aplicación web con el siguiente comando:
+
+    ```bash
+    docker run -d \
+      --network techreo-challenge-network \
+      --name techreo-challenge-web \
+      -p 4200:80 \
+      ghcr.io/leonardoalvarez20/techreo-challenge-web:latest
+    ```
+
+## Verificar los Contenedores
+
+Puedes verificar que los contenedores estén ejecutándose con el siguiente comando:
+
+```bash
+docker ps
+```
+## Acceder a la aplicación 
+
+Haz click en el siguiente enlace para visualizar el sistema: `http://localhost:4200/login`
